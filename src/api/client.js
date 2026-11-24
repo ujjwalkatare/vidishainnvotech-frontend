@@ -25,7 +25,7 @@ export function setToken(token) {
 const apiClient = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL ||
-    (import.meta.env.DEV ? "http://127.0.0.1:8000/api" : "/api"),
+    (import.meta.env.DEV ? "https://tough-gold-seal-37.hostingersite.com/public/api/" : "/api"),
   headers: {
     Accept: "application/json",
   },
