@@ -1,0 +1,107 @@
+/* =========================================================
+   APP LEVEL STYLES
+   Vidisha Innovotech Website
+   ========================================================= */
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   GENERIC INTERACTION
+   ========================================================= */
+
+.counter {
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: var(--primary);
+  background: var(--primary-soft);
+  border: 2px solid transparent;
+  transition:
+    border-color 0.3s ease,
+    background 0.3s ease;
+  margin-bottom: 24px;
+}
+
+.counter:hover {
+  border-color: var(--border-hover);
+}
+
+.counter:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   EMPTY / LOADING APP STATES
+   ========================================================= */
+
+.app-loading {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+.app-error {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: var(--danger);
+  text-align: center;
+}
+
+/* =========================================================
+   APP CONTENT
+   ========================================================= */
+
+.app-content {
+  flex: 1;
+  width: 100%;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .counter {
+    width: 100%;
+    margin-bottom: 18px;
+  }
+
+  .app-loading,
+  .app-error {
+    min-height: 40vh;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .counter {
+    transition: none;
+  }
+}

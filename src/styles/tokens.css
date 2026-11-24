@@ -1,0 +1,112 @@
+/* ============================================================
+   DESIGN TOKENS
+   Single source of truth for color, type, spacing, elevation.
+   ============================================================ */
+
+:root {
+  /* ---- Color: surfaces ---- */
+  --color-page: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f1f5f9;
+
+  /* ---- Color: brand ---- */
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+
+  /* ---- Color: text hierarchy ---- */
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748b;
+
+  /* ---- Color: lines ---- */
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  /* ---- Color: footer ---- */
+  --color-footer-border: #334155;
+  --color-footer-muted: #94a3b8;
+
+  /* ---- Color: semantic ---- */
+  --color-success: #16a34a;
+  --color-success-strong: #166534;
+  --color-success-bg: #dcfce7;
+  --color-error: #dc2626;
+
+  /* ---- Typography ---- */
+  --font-family:
+    Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --text-xs: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-h3: 22px;
+  --text-h2: 32px;
+  --text-h1: 56px;
+
+  --leading-h1: 1.1;
+  --leading-h2: 1.2;
+  --leading-body: 1.6;
+
+  /* ---- Spacing scale ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* ---- Radii ---- */
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-card: 16px;
+
+  /* ---- Elevation: subtle by design ---- */
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04);
+  --shadow-card-hover: 0 12px 28px rgb(15 23 42 / 0.12);
+  --shadow-lg: 0 12px 32px rgb(15 23 42 / 0.1);
+
+  /* ---- Layout ---- */
+  --container-max: 1200px;
+  --control-height: 44px;
+
+  /* navy + blue system */
+  --color-navy: #0b1f3a;
+  --color-navy-2: #12305a;
+  --color-primary-soft: #eff6ff;
+  --color-accent: #38bdf8;
+  --gradient-hero: linear-gradient(135deg, #0b1f3a 0%, #12305a 60%, #1d4ed8 100%);
+  --gradient-primary: linear-gradient(135deg, #2563eb, #1d4ed8);
+
+  /* motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 0.18s;
+  --dur: 0.35s;
+  --dur-slow: 0.6s;
+
+  /* missing vars used in App.css */
+  --danger: #dc2626;
+  --border-hover: #93c5fd;
+
+  /* ---- Aliases ----
+     Shorthand names accepted in externally authored CSS.
+     These mirror the tokens above — do not treat as new values. */
+  --primary: var(--color-primary);
+  --primary-dark: var(--color-primary-hover);
+  --primary-soft: #eff6ff;
+  --text: var(--color-text);
+  --text-muted: var(--color-text-muted);
+}
+
+/* ============================================================
+   RESPONSIVE TYPE SCALE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  :root {
+    --text-h1: 32px;
+    --text-h2: 24px;
+    --text-h3: 18px;
+  }
+}
