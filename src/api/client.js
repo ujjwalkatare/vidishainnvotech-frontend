@@ -1,6 +1,12 @@
 import axios from "axios";
 
 const TOKEN_KEY = "vidisha_auth_token";
+const DEFAULT_API_URL =
+  "https://tough-gold-seal-37.hostingersite.com/public/api";
+
+const API_URL = (
+  import.meta.env.VITE_API_URL || DEFAULT_API_URL
+).replace(/\/+$/, "");
 
 export function getToken() {
   try {
@@ -23,9 +29,7 @@ export function setToken(token) {
 }
 
 const apiClient = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_URL ||
-    (import.meta.env.DEV ? "https://tough-gold-seal-37.hostingersite.com/public/api/" : "/api"),
+  baseURL: API_URL,
   headers: {
     Accept: "application/json",
   },
