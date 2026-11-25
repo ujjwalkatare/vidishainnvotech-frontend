@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import {
 
@@ -19,6 +20,8 @@ import {
   Trash2,
 
   Check,
+
+  Eye,
 
 } from "lucide-react";
 
@@ -45,6 +48,10 @@ function createSlug(title) {
 
     .replace(/\s+/g, "-");
 
+}
+
+function getImageUrl(project) {
+  return project?.image_url || project?.image || project?.thumbnail || "";
 }
 
 
@@ -99,7 +106,32 @@ function AdminProjects() {
 
   const [deletingId, setDeletingId] = useState(null);
 
+  const [formOpen, setFormOpen] = useState(false);
+
+  const [viewingProject, setViewingProject] = useState(null);
+
   const imageInputRef = useRef(null);
+
+  useEffect(() => {
+    if (!viewingProject) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setViewingProject(null);
+    };
+
+    document.body.style.overflow = "hidden";
+    if (scrollbarWidth > 0) document.body.style.paddingRight = `${scrollbarWidth}px`;
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [viewingProject]);
 
 
 
@@ -267,6 +299,8 @@ function AdminProjects() {
 
   const handleEdit = (project) => {
 
+    setFormOpen(true);
+
     setForm({
 
       title: project.title ?? "",
@@ -429,6 +463,8 @@ function AdminProjects() {
 
       resetForm();
 
+      setFormOpen(false);
+
       await loadProjects();
 
     } catch (err) {
@@ -479,6 +515,25 @@ function AdminProjects() {
 
           </div>
 
+          <button
+            type="button"
+            className="btn btn-primary admin-header__action"
+            onClick={() => {
+              if (formOpen) {
+                resetForm();
+                setFormOpen(false);
+              } else {
+                resetForm();
+                setFormOpen(true);
+              }
+            }}
+            aria-expanded={formOpen}
+            aria-controls="admin-software-form"
+          >
+            {formOpen ? <X size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}
+            {formOpen ? "Close form" : "Add software"}
+          </button>
+
         </header>
 
 
@@ -527,7 +582,8 @@ function AdminProjects() {
 
 
 
-        <section className="admin-panel" style={{ marginBottom: 22 }}>
+        {formOpen && (
+        <section id="admin-software-form" className="admin-panel admin-collapsible-form" style={{ marginBottom: 22 }}>
 
           <h3>
 
@@ -984,7 +1040,10 @@ function AdminProjects() {
 
                   className="btn btn-secondary"
 
-                  onClick={resetForm}
+                  onClick={() => {
+                    resetForm();
+                    setFormOpen(false);
+                  }}
 
                   disabled={saving}
 
@@ -1015,6 +1074,7 @@ function AdminProjects() {
           </form>
 
         </section>
+        )}
 
 
 
@@ -1249,6 +1309,24 @@ function AdminProjects() {
 
                                   className="icon-btn"
 
+                                  onClick={() => setViewingProject(project)}
+
+                                  title="View details"
+
+                                  aria-label={`View ${project.title} details`}
+
+                                >
+
+                                  <Eye size={15} />
+
+                                </button>
+
+                                <button
+
+                                  type="button"
+
+                                  className="icon-btn"
+
                                   onClick={() => handleEdit(project)}
 
                                   disabled={saving}
@@ -1301,6 +1379,91 @@ function AdminProjects() {
 
           </>
 
+        )}
+
+        {viewingProject && createPortal(
+          <div
+            className="admin-detail-backdrop ui-overlay"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) setViewingProject(null);
+            }}
+          >
+            <section
+              className="admin-detail-modal ui-scroll-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="software-detail-title"
+            >
+              <header className="admin-detail-modal__header">
+                <div>
+                  <span className="admin-detail-modal__eyebrow">Software details</span>
+                  <h2 id="software-detail-title">{viewingProject.title}</h2>
+                </div>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  onClick={() => setViewingProject(null)}
+                  aria-label="Close software details"
+                  title="Close"
+                >
+                  <X size={18} />
+                </button>
+              </header>
+
+              <div className="admin-detail-modal__body ui-scroll-dialog__body">
+                {getImageUrl(viewingProject) && (
+                  <img
+                    className="admin-detail-modal__image"
+                    src={getImageUrl(viewingProject)}
+                    alt={`${viewingProject.title} preview`}
+                  />
+                )}
+
+                <div className="admin-detail-badges">
+                  <span className={`admin-detail-badge ${viewingProject.is_active ? "is-active" : ""}`}>
+                    {viewingProject.is_active ? "Active" : "Inactive"}
+                  </span>
+                  <span className="admin-detail-badge">
+                    {viewingProject.project_type === "diploma_mini" ? "Small Software" : "Standard"}
+                  </span>
+                  {viewingProject.is_iot && <span className="admin-detail-badge is-iot">IoT</span>}
+                </div>
+
+                <dl className="admin-detail-grid">
+                  <div><dt>Software ID</dt><dd>#{viewingProject.id}</dd></div>
+                  <div><dt>Category</dt><dd>{viewingProject.category?.name || "—"}</dd></div>
+                  <div><dt>Level</dt><dd>{viewingProject.level ? softwareLabel(viewingProject.level) : "—"}</dd></div>
+                  <div><dt>Slug</dt><dd>{viewingProject.slug || "—"}</dd></div>
+                  <div>
+                    <dt>Offer price</dt>
+                    <dd>{viewingProject.offer_price != null ? `₹${Number(viewingProject.offer_price).toLocaleString("en-IN")}` : "—"}</dd>
+                  </div>
+                  <div>
+                    <dt>Cut price</dt>
+                    <dd>{viewingProject.cut_price != null ? `₹${Number(viewingProject.cut_price).toLocaleString("en-IN")}` : "—"}</dd>
+                  </div>
+                  {viewingProject.is_iot && (
+                    <>
+                      <div><dt>IoT kit price</dt><dd>{viewingProject.kit_price != null ? `₹${Number(viewingProject.kit_price).toLocaleString("en-IN")}` : "—"}</dd></div>
+                      <div><dt>IoT kit link</dt><dd className="admin-detail-break">{viewingProject.iot_kit_link || "—"}</dd></div>
+                    </>
+                  )}
+                </dl>
+
+                <section className="admin-detail-description">
+                  <h3>Description</h3>
+                  <p>{viewingProject.abstract || "No description provided."}</p>
+                </section>
+              </div>
+
+              <footer className="admin-detail-modal__footer">
+                <button type="button" className="btn btn-secondary" onClick={() => setViewingProject(null)}>
+                  Close
+                </button>
+              </footer>
+            </section>
+          </div>,
+          document.body,
         )}
 
       </main>

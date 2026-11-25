@@ -169,6 +169,7 @@ export default function AdminDocumentation() {
 
   const [form, setForm] = useState(initialForm);
   const [editingId, setEditingId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
 
   const [search, setSearch] = useState("");
   const [collegeFilter, setCollegeFilter] = useState("");
@@ -331,6 +332,7 @@ export default function AdminDocumentation() {
   function resetForm() {
     setForm(initialForm);
     setEditingId(null);
+    setShowForm(false);
     setStages([]);
 
     const input = window.document.getElementById("documentation-file");
@@ -340,6 +342,7 @@ export default function AdminDocumentation() {
   }
 
   function editDocument(doc) {
+    setShowForm(true);
     setEditingId(doc.id);
 
     setForm({
@@ -476,9 +479,19 @@ export default function AdminDocumentation() {
           <span className="student-dashboard__eyebrow">Content management</span>
           <h1>Documentation</h1>
         </div>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => {
+            if (showForm) resetForm();
+            else setShowForm(true);
+          }}
+        >
+          {showForm ? "Close form" : "+ Upload Documentation"}
+        </button>
       </header>
 
-      <section style={styles.card}>
+      {showForm && <section style={styles.card}>
         <h2 style={{ marginTop: 0 }}>
           {editingId ? "Edit Documentation" : "Upload Documentation"}
         </h2>
@@ -688,7 +701,7 @@ export default function AdminDocumentation() {
             )}
           </div>
         </form>
-      </section>
+      </section>}
 
       <section style={styles.card}>
         <h2 style={{ marginTop: 0 }}>Uploaded Documents</h2>

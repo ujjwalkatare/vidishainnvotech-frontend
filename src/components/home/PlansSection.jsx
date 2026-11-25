@@ -40,7 +40,6 @@ function PlansSection() {
           ))}
         </div>
 
-        <p className="pl__note">Semester 1 report bundle available as a ₹2,000 add-on.</p>
       </div>
     </section>
   );

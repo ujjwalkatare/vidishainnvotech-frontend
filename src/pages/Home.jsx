@@ -14,7 +14,7 @@ import { scrollToId } from "../utils/catalog";
 const FEATURED_LIMIT = 8;
 
 const HOME_LINKS = [
-  { label: "Software", href: "#software" },
+  { label: "Software", to: "/projects" },
   { label: "Categories", href: "#categories" },
   { label: "How it works", href: "#how-it-works" },
   { label: "Plans", href: "#plans" },

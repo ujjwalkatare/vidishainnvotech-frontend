@@ -31,6 +31,11 @@ function Header({
 
   const close = () => setOpen(false);
 
+  const handleBrandClick = () => {
+    close();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const handleNavClick = (link) => (event) => {
     if (link.href?.startsWith("#")) {
       event.preventDefault();
@@ -80,7 +85,7 @@ function Header({
   return (
     <header className={`vh vh--${variant}${scrolled ? " is-scrolled" : ""}`}>
       <div className="vh__bar">
-        <Link to="/" className="vh-brand" aria-label={`${brand.name} home`} onClick={close}>
+        <Link to="/" className="vh-brand" aria-label={`${brand.name} home`} onClick={handleBrandClick}>
           <BrandLogo markClassName="vh-brand__icon" nameClassName="vh-brand__text" />
           {variant !== "public" && <span className="vh-badge">{roleLabel}</span>}
         </Link>

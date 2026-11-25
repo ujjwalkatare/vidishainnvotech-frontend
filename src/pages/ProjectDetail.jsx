@@ -1120,7 +1120,7 @@ function ProjectDetail() {
                       : "badge badge-neutral"
                   }
                 >
-                  {project.is_iot ? "IoT Software" : "Software Software"}
+                  {project.is_iot ? "IoT Software" : "Software"}
                 </span>
                 {project.is_iot && hasValue(project.iot_kit_link) && (
                   <a
@@ -1149,7 +1149,7 @@ function ProjectDetail() {
                 <Cpu size={18} />
                 <span>Software type</span>
                 <strong>
-                  {project.is_iot ? "IoT Software" : "Software Software"}
+                  {project.is_iot ? "IoT Software" : "Software"}
                 </strong>
               </div>
               <div className="hero-fact">

@@ -211,6 +211,8 @@ function ZipResourceCard({
 function ProjectZipManager({
   projects,
   stages,
+  selectedProjectId: controlledProjectId = "",
+  onSelectedProjectChange,
   confirmingStageDeleteId = null,
   deletingStageId = null,
   onDeleteStage,
@@ -229,10 +231,11 @@ function ProjectZipManager({
   useToastOn(error, "error", setError);
   useToastOn(success, "success", setSuccess);
 
+  const requestedProjectId = controlledProjectId || selectedProjectChoice;
   const selectedProjectId = projects.some(
-    (project) => String(project.id) === selectedProjectChoice,
+    (project) => String(project.id) === String(requestedProjectId),
   )
-    ? selectedProjectChoice
+    ? String(requestedProjectId)
     : projects[0]?.id
       ? String(projects[0].id)
       : "";
@@ -394,6 +397,7 @@ function ProjectZipManager({
             disabled={projects.length === 0 || Boolean(busyAction)}
             onChange={(event) => {
               setSelectedProjectChoice(event.target.value);
+              onSelectedProjectChange?.(event.target.value);
               setConfirmingFileId(null);
               setProjectFiles(EMPTY_FILES);
             }}

@@ -56,9 +56,13 @@ html { scroll-padding-top: 76px; }
 .vf__inner { max-width: var(--container); margin: 0 auto; padding: 56px 24px 24px; }
 .vf__top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; padding-bottom: 40px;
   border-bottom: 1px solid rgba(255,255,255,.1); }
-.vf__brand { display: inline-flex; align-items: center; gap: 10px; color: #fff; font-weight: 700; font-size: 18px; text-decoration: none; }
-.vf__brand span { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px;
+.vf__about { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; }
+.vf__brand { display: inline-flex; width: fit-content; align-items: center; color: #fff; font-weight: 700; font-size: 18px; line-height: 1.2; white-space: nowrap; text-decoration: none; }
+.vf__brand-logo { display: inline-flex; align-items: center; gap: 10px; }
+.vf__brand-logo .brand-logo__copy { display: inline-grid; width: auto; height: auto; min-width: 0; }
+.vf__brand-icon { display: grid; flex: 0 0 34px; place-items: center; width: 34px; height: 34px; border-radius: 9px;
   background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
+.vf__brand-name { display: block; width: auto; height: auto; line-height: 1.2; }
 .vf__about p { max-width: 380px; margin: 16px 0 0; color: #94a3b8; font-size: 15px; line-height: 1.7; }
 .vf__col { display: grid; align-content: start; gap: 10px; }
 .vf__col h2 { margin: 0 0 6px; color: #fff; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
@@ -77,8 +81,8 @@ html { scroll-padding-top: 76px; }
 
 .vf__col a { display: inline-block; transition: color .2s, transform .25s var(--ease-out); }
 .vf__col a:hover { transform: translateX(4px); }
-.vf__brand span { transition: transform .35s var(--ease-out); }
-.vf__brand:hover span { transform: rotate(-6deg) scale(1.06); }
+.vf__brand-icon { transition: transform .35s var(--ease-out); }
+.vf__brand:hover .vf__brand-icon { transform: rotate(-6deg) scale(1.06); }
 .vf { background: linear-gradient(180deg, #0b1b3a 0%, #081428 100%); }
 
 .vh--student .vh__bar {

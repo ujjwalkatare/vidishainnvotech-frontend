@@ -1415,3 +1415,229 @@
   margin-top: 0;
   margin-bottom: 18px;
 }
+
+/* Catalog controls and read-only detail dialogs */
+.student-page .admin-header__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.student-page .admin-collapsible-form {
+  animation: admin-form-enter 180ms ease-out both;
+}
+
+@keyframes admin-form-enter {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.admin-detail-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background: rgb(15 23 42 / 62%);
+  backdrop-filter: blur(6px);
+  animation: admin-modal-fade 160ms ease-out both;
+}
+
+.admin-detail-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(780px, 100%);
+  max-height: calc(100dvh - 48px);
+  overflow: hidden;
+  background: #f8fafc;
+  border: 1px solid rgb(255 255 255 / 55%);
+  border-radius: 20px;
+  box-shadow: 0 32px 80px rgb(15 23 42 / 34%);
+  animation: admin-modal-enter 180ms ease-out both;
+}
+
+.admin-detail-modal--compact { width: min(620px, 100%); }
+
+.admin-detail-modal__header,
+.admin-detail-modal__footer {
+  flex: 0 0 auto;
+  background: rgb(248 250 252 / 96%);
+}
+
+.admin-detail-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 26px 17px;
+  border-bottom: 1px solid #e2e8f0;
+  backdrop-filter: blur(10px);
+}
+
+.admin-detail-modal__header h2 {
+  margin: 4px 0 0;
+  color: #14213d;
+  font-size: clamp(20px, 3vw, 26px);
+  line-height: 1.25;
+}
+
+.admin-detail-modal__eyebrow {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-detail-modal__header .icon-btn {
+  display: grid;
+  place-items: center;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #cbd5e1;
+  border-radius: 11px;
+  background: #fff;
+  color: #475569;
+}
+
+.admin-detail-modal__header .icon-btn:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.admin-detail-modal__body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px 26px 26px;
+  scrollbar-gutter: stable;
+}
+
+.admin-detail-modal__image {
+  display: block;
+  width: min(100%, 560px);
+  max-height: 220px;
+  margin-inline: auto;
+  margin-bottom: 20px;
+  object-fit: contain;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #f1f5f9;
+}
+
+.admin-detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.admin-detail-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 10px;
+  color: #475569;
+  background: #f8fafc;
+  border: 1px solid #dbe4f0;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.admin-detail-badge.is-active { color: #166534; background: #f0fdf4; border-color: #bbf7d0; }
+.admin-detail-badge.is-iot { color: #1d4ed8; background: #eff6ff; border-color: #bfdbfe; }
+
+.admin-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.admin-detail-grid > div {
+  min-width: 0;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 1px solid #e7edf5;
+  border-radius: 12px;
+}
+
+.admin-detail-grid dt {
+  margin-bottom: 5px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.admin-detail-grid dd {
+  margin: 0;
+  color: #14213d;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.admin-detail-break { overflow-wrap: anywhere; }
+
+.admin-detail-description {
+  margin-top: 16px;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid #e7edf5;
+  border-radius: 12px;
+}
+
+.admin-detail-description h3 { margin: 0 0 8px; color: #14213d; font-size: 14px; }
+.admin-detail-description p { margin: 0; color: #475569; line-height: 1.7; white-space: pre-wrap; }
+
+.admin-detail-category-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 18px;
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+}
+
+.admin-detail-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid #e7edf5;
+}
+
+@keyframes admin-modal-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes admin-modal-enter {
+  from { opacity: 0; transform: translateY(10px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 680px) {
+  .student-page .admin-header { align-items: stretch; }
+  .student-page .admin-header__action { width: 100%; }
+  .admin-detail-backdrop { align-items: end; padding: 12px; }
+  .admin-detail-modal { max-height: 92vh; border-radius: 18px; }
+  .admin-detail-modal__header { padding: 18px; }
+  .admin-detail-modal__body { padding: 18px; }
+  .admin-detail-modal__footer { padding: 14px 18px; }
+  .admin-detail-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .student-page .admin-collapsible-form,
+  .admin-detail-backdrop,
+  .admin-detail-modal { animation: none; }
+}

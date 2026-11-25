@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Check, Pencil, Plus, Tags, Trash2, X } from "lucide-react";
+import { createPortal } from "react-dom";
+import { Check, Eye, Pencil, Plus, Tags, Trash2, X } from "lucide-react";
 
 import apiClient from "../../api/client";
 import { useToast } from "../../components/Toast";
@@ -17,11 +18,34 @@ function AdminCategories() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState("");
   const [confirmingId, setConfirmingId] = useState(null);
   const [busyId, setBusyId] = useState(null);
+  const [viewingCategory, setViewingCategory] = useState(null);
+
+  useEffect(() => {
+    if (!viewingCategory) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setViewingCategory(null);
+    };
+
+    document.body.style.overflow = "hidden";
+    if (scrollbarWidth > 0) document.body.style.paddingRight = `${scrollbarWidth}px`;
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [viewingCategory]);
 
   const loadCategories = async () => {
     try {
@@ -47,6 +71,7 @@ function AdminCategories() {
     try {
       await apiClient.post("/admin/categories", { name: name.trim() });
       setName("");
+      setShowAddForm(false);
       toast.success("Category created successfully.");
       await loadCategories();
     } catch (err) {
@@ -119,6 +144,17 @@ function AdminCategories() {
             <h1>Categories</h1>
             <p className="admin-header__desc">Create, edit and manage software categories.</p>
           </div>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => {
+              if (showAddForm) setName("");
+              setShowAddForm((current) => !current);
+            }}
+          >
+            {showAddForm ? <X size={17} aria-hidden="true" /> : <Plus size={17} aria-hidden="true" />}
+            {showAddForm ? "Close form" : "Add category"}
+          </button>
         </header>
 
         <section className="admin-summary-grid" aria-label="Summary">
@@ -133,7 +169,7 @@ function AdminCategories() {
           </article>
         </section>
 
-        <section className="admin-panel" style={{ marginBottom: 22 }}>
+        {showAddForm && <section className="admin-panel" style={{ marginBottom: 22 }}>
           <h3>
             <Plus size={19} aria-hidden="true" />
             Add category
@@ -157,7 +193,7 @@ function AdminCategories() {
               {saving ? "Saving..." : "Create category"}
             </button>
           </form>
-        </section>
+        </section>}
 
         {loading && (
           <div aria-busy="true" style={{ display: "grid", gap: 10 }}>
@@ -251,6 +287,15 @@ function AdminCategories() {
                               </>
                             ) : (
                               <>
+                                <button
+                                  type="button"
+                                  className="icon-btn"
+                                  onClick={() => setViewingCategory(category)}
+                                  title="View details"
+                                  aria-label={`View ${category.name} details`}
+                                >
+                                  <Eye size={15} />
+                                </button>
                                 <button type="button" className="icon-btn" onClick={() => startEdit(category)} title="Edit">
                                   <Pencil size={15} />
                                 </button>
@@ -268,6 +313,59 @@ function AdminCategories() {
               </table>
             </div>
           </>
+        )}
+
+        {viewingCategory && createPortal(
+          <div
+            className="admin-detail-backdrop ui-overlay"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) setViewingCategory(null);
+            }}
+          >
+            <section
+              className="admin-detail-modal admin-detail-modal--compact ui-scroll-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="category-detail-title"
+            >
+              <header className="admin-detail-modal__header">
+                <div>
+                  <span className="admin-detail-modal__eyebrow">Category details</span>
+                  <h2 id="category-detail-title">{viewingCategory.name}</h2>
+                </div>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  onClick={() => setViewingCategory(null)}
+                  aria-label="Close category details"
+                  title="Close"
+                >
+                  <X size={18} />
+                </button>
+              </header>
+
+              <div className="admin-detail-modal__body ui-scroll-dialog__body">
+                <div className="admin-detail-category-icon" aria-hidden="true">
+                  <Tags size={24} />
+                </div>
+                <dl className="admin-detail-grid">
+                  <div><dt>Category ID</dt><dd>#{viewingCategory.id}</dd></div>
+                  <div><dt>Category name</dt><dd>{viewingCategory.name}</dd></div>
+                  <div><dt>Slug</dt><dd>{viewingCategory.slug || "—"}</dd></div>
+                  <div><dt>Software count</dt><dd>{viewingCategory.projects_count ?? viewingCategory.software_count ?? "—"}</dd></div>
+                  <div><dt>Created</dt><dd>{viewingCategory.created_at ? new Date(viewingCategory.created_at).toLocaleString("en-IN") : "—"}</dd></div>
+                  <div><dt>Last updated</dt><dd>{viewingCategory.updated_at ? new Date(viewingCategory.updated_at).toLocaleString("en-IN") : "—"}</dd></div>
+                </dl>
+              </div>
+
+              <footer className="admin-detail-modal__footer">
+                <button type="button" className="btn btn-secondary" onClick={() => setViewingCategory(null)}>
+                  Close
+                </button>
+              </footer>
+            </section>
+          </div>,
+          document.body,
         )}
       </main>
     </div>

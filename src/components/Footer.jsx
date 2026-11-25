@@ -18,7 +18,11 @@ function Footer({ links = DEFAULT_LINKS }) {
         <Reveal className="vf__top">
           <div className="vf__about">
             <Link to="/" className="vf__brand">
-              <BrandLogo />
+              <BrandLogo
+                className="vf__brand-logo"
+                markClassName="vf__brand-icon"
+                nameClassName="vf__brand-name"
+              />
             </Link>
             <p>
               Empowering users across India with software

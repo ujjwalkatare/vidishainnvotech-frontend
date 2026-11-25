@@ -4,7 +4,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import {
   ArrowRight,
-  BookOpen,
   Cpu,
   Eye,
   EyeOff,
@@ -251,10 +250,6 @@ function Login() {
           </div>
 
           <ul className="lg-points">
-            <li>
-              <BookOpen size={16} /> Black book and semester reports
-            </li>
-
             <li>
               <Unlock size={16} /> Pay in installments, unlock as you go
             </li>

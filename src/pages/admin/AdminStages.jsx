@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   Edit,
+  Eye,
   Layers,
   LoaderCircle,
   Plus,
   Trash2,
   X,
 } from "lucide-react";
+import { createPortal } from "react-dom";
 
 import apiClient from "../../api/client";
 import { useToastOn } from "../../components/Toast";
@@ -37,6 +39,8 @@ function AdminStages() {
   const [editingId, setEditingId] = useState(null);
   const [withZip, setWithZip] = useState(false);
   const [zipFile, setZipFile] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [viewingStage, setViewingStage] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -104,6 +108,7 @@ function AdminStages() {
   };
 
   const handleEdit = (stage) => {
+    setShowForm(true);
     setEditingId(stage.id);
     setWithZip(false);
     setZipFile(null);
@@ -122,6 +127,22 @@ function AdminStages() {
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  useEffect(() => {
+    if (!viewingStage) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setViewingStage(null);
+    };
+
+    document.documentElement.classList.add("document-scroll-locked");
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.documentElement.classList.remove("document-scroll-locked");
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [viewingStage]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -264,6 +285,17 @@ function AdminStages() {
             <span className="student-dashboard__eyebrow">Content management</span>
             <h1>Software Stages</h1>
           </div>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => {
+              if (showForm) resetForm();
+              setShowForm((current) => !current);
+            }}
+          >
+            {showForm ? <X size={17} aria-hidden="true" /> : <Plus size={17} aria-hidden="true" />}
+            {showForm ? "Close form" : "Create software stage"}
+          </button>
         </header>
 
         <section className="admin-summary-grid" aria-label="Summary">
@@ -288,7 +320,7 @@ function AdminStages() {
           </article>
         </section>
 
-        <section className="admin-panel" style={{ marginBottom: 22 }}>
+        {showForm && <section className="admin-panel" style={{ marginBottom: 22 }}>
           <h3>
             {editingId ? (
               <Edit size={19} aria-hidden="true" />
@@ -448,7 +480,7 @@ function AdminStages() {
               )}
             </div>
           </form>
-        </section>
+        </section>}
 
         <ProjectZipManager
           projects={projects}
@@ -458,6 +490,10 @@ function AdminStages() {
           onDeleteStage={handleDelete}
           onStageDeleteRequest={setConfirmingDeleteId}
           onStageDeleteCancel={() => setConfirmingDeleteId(null)}
+          selectedProjectId={form.project_id}
+          onSelectedProjectChange={(projectId) =>
+            setForm((current) => ({ ...current, project_id: projectId }))
+          }
         />
 
         {loading && (
@@ -519,6 +555,14 @@ function AdminStages() {
                         <div className="admin-row-actions">
                           <button
                             type="button"
+                            onClick={() => setViewingStage(stage)}
+                            className="btn btn-secondary btn-sm"
+                          >
+                            <Eye size={14} aria-hidden="true" />
+                            View
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => handleEdit(stage)}
                             className="btn btn-secondary btn-sm"
                           >
@@ -568,6 +612,52 @@ function AdminStages() {
               </table>
             </div>
           </>
+        )}
+
+        {viewingStage && createPortal(
+          <div
+            className="admin-detail-backdrop ui-overlay"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) setViewingStage(null);
+            }}
+          >
+            <section
+              className="admin-detail-modal admin-detail-modal--compact ui-scroll-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="stage-detail-title"
+            >
+              <header className="admin-detail-modal__header">
+                <div>
+                  <span className="admin-detail-modal__eyebrow">Software stage details</span>
+                  <h2 id="stage-detail-title">
+                    {viewingStage.project?.title || projects.find((project) => project.id === viewingStage.project_id)?.title || `Software #${viewingStage.project_id}`}
+                  </h2>
+                </div>
+                <button type="button" className="icon-btn" onClick={() => setViewingStage(null)} aria-label="Close stage details">
+                  <X size={18} />
+                </button>
+              </header>
+              <div className="admin-detail-modal__body ui-scroll-dialog__body">
+                <div className="admin-detail-badges">
+                  <span className="admin-detail-badge is-active">{viewingStage.stage_percent}% stage</span>
+                  <span className="admin-detail-badge">Semester {viewingStage.semester || "—"}</span>
+                </div>
+                <dl className="admin-detail-grid">
+                  <div><dt>Stage ID</dt><dd>#{viewingStage.id}</dd></div>
+                  <div><dt>Software ID</dt><dd>#{viewingStage.project_id}</dd></div>
+                  <div><dt>Percentage</dt><dd>{viewingStage.stage_percent}%</dd></div>
+                  <div><dt>Semester</dt><dd>{viewingStage.semester || "—"}</dd></div>
+                  <div><dt>Video URL</dt><dd className="admin-detail-break">{viewingStage.video_url || "—"}</dd></div>
+                  <div><dt>PPT path</dt><dd className="admin-detail-break">{viewingStage.ppt_path || "—"}</dd></div>
+                </dl>
+              </div>
+              <footer className="admin-detail-modal__footer">
+                <button type="button" className="btn btn-secondary" onClick={() => setViewingStage(null)}>Close</button>
+              </footer>
+            </section>
+          </div>,
+          document.body,
         )}
 
         <style>{`
